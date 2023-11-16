@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 2125450346104358671}
   - component: {fileID: 7090953371306422841}
   - component: {fileID: 7703353982499212686}
-  - component: {fileID: 1125350801862439257}
+  - component: {fileID: 6990921758087392556}
   m_Layer: 0
   m_Name: TurretBullet
   m_TagString: Bullet
@@ -106,7 +106,7 @@ SphereCollider:
   serializedVersion: 3
   m_Radius: 0.5
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &1125350801862439257
+--- !u!114 &6990921758087392556
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -115,6 +115,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 2179415975802843236}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 38e74e9b614604edeaaf579e89f0eeec, type: 3}
+  m_Script: {fileID: 11500000, guid: 553f7a7fdbd1149bab7684d45166a33e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  bulletLife: 20
+  rotation: 0
+  speed: 25

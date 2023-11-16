@@ -9,19 +9,19 @@ public class TimeUI : MonoBehaviour
     
     private void OnEnable()
     {
+        TimeManager.OnSecondChanged += UpdateTime;
         TimeManager.OnMinuteChanged += UpdateTime;
-        TimeManager.OnHourChanged += UpdateTime;
     }
 
      private void OnDisable()
     {
+        TimeManager.OnSecondChanged -= UpdateTime;
         TimeManager.OnMinuteChanged -= UpdateTime;
-        TimeManager.OnHourChanged -= UpdateTime;
     }
 
     private void UpdateTime()
     {
-        timeText.text = "Time Count " + $"{TimeManager.Hour.ToString("00")}:{TimeManager.Minute:00}";
+        timeText.text = "Time Count " + $"{TimeManager.Minute.ToString("00")}:{TimeManager.Second:00}";
     }
 
 }

@@ -10,18 +10,18 @@ public class TurretMovement : MonoBehaviour
     // Start is called before the first frame update
     void Start()
     {
-        movementSpeed = 200f;
+        movementSpeed = 500f * Time.timeScale;
         moveRight = true;
     }
 
     // Update is called once per frame
     void Update()
     {
-        if(transform.position.x > 200f)
+        if(transform.position.x > 600f)
         {
             moveRight = false;
         }
-        else if(transform.position.x < -200f)
+        else if(transform.position.x < -600f)
         {
             moveRight = true;
         }

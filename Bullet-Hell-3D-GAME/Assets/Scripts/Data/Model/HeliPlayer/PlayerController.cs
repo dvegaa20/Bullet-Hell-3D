@@ -10,20 +10,11 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float speed = 100.0f;
-    public float turnSpeed = 200.0f;
+    public float speed = 100.0f * Time.timeScale;
+    public float turnSpeed = 200.0f * Time.timeScale;
     public float horizontalInput;
     public float forwardInput;
-
     public string inputId;
-
-    /// <summary>
-    /// This method is called before the first frame update
-    /// </summary>
-    void Start()
-    {
-        
-    }
 
     /// <summary>
     /// This method is called once per frame
