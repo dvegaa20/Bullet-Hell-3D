@@ -1,103 +1,140 @@
-// using System.Collections;
-// using System.Collections.Generic;
-// using UnityEngine;
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
 
-// public class ShootingMode : MonoBehaviour
-// {
-//     [Header("Burst Shot Settings")]
-//     [SerializeField]
-//     private int bulletsPerShot = 5;
-//     [SerializeField]
-//     private float startAngle = 90f;
-//     [SerializeField]
-//     private float endAngle = 270f;
+public class ShootingMode : MonoBehaviour
+{
+    public int timerNextStage;
+    private int timer;
+    public int currentStage;
+    private int timerGlobal = 10;
+    public GameObject bulletPrefab; 
+    public float respawnTime; 
+    public int bulletsPerCircle = 5; // Cantidad de balas por ráfaga en corrutine1
+    public float bulletSpeed = 5f; // Ajusta la velocidad según tus necesidades
+    public int bulletsPerSpiral = 5;
+    public float spiralRadius = 1.5f;
+    public float oscillationAmplitude = 0.5f; // Ajusta la amplitud de la oscilación
+    public float oscillationFrequency = 2f; // Ajusta la frecuencia de la oscilación
 
-//     [Header("Circle Shot Settings")]
-//     [SerializeField]
-//     private int bulletsInCircle = 10;
-//     [SerializeField]
-//     private float circleRadius = 5f;
-//     [SerializeField]
-//     private float timeBetweenCircles = 5f;
+    void Start()
+    {
+        timer = timerNextStage;
+        StartCoroutine(corrutine1());
+    }
 
-//     [Header("Spiral Shot Settings")]
-//     [SerializeField]
-//     private int bulletsInSpiral = 10;
-//     [SerializeField]
-//     private float spiralRadius = 1f;
-//     [SerializeField]
-//     private float spiralAngleStep = 10f;
-//     [SerializeField]
-//     private float timeBetweenSpirals = 5f;
+    private void corrutine1actions()
+    {
+        // Disparar ráfagas de círculos (10 balas por ráfaga)
+        for (int i = 0; i < bulletsPerCircle; i++)
+        {
+            float angle = -i * (360f / bulletsPerCircle);
+            Quaternion rotation = Quaternion.Euler(90, 0, angle);
+            GameObject bullet = Instantiate(bulletPrefab, transform.position, rotation);
+            
+            // Ajustar la velocidad de la bala
+            bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
+        }
+    }
 
-//     private Vector3 bulletMoveDirection;
+    private void corrutine2actions()
+    {
+        for (int i = 0; i < bulletsPerSpiral; i++)
+        {
+            float angle = i * (360f / bulletsPerSpiral);
+            float x = Mathf.Cos(angle) * spiralRadius;
+            float y = Mathf.Sin(angle) * spiralRadius + Mathf.Sin(Time.time * oscillationFrequency) * oscillationAmplitude;
 
-//     void Start()
-//     {
-//         InvokeRepeating("BurstShot", .5f, 1f);
-//     }
+            Vector3 spawnPosition = transform.position + new Vector3(x, y, 0f);
+            Quaternion rotation = Quaternion.Euler(0, 0, angle);
+            GameObject bullet = Instantiate(bulletPrefab, spawnPosition, rotation);
 
-//     public void BurstShot()
-//     {
-//         float angleStep = (endAngle - startAngle) / bulletsPerShot;
-//         float angle = startAngle;
+            // Ajustar la velocidad de la bala
+            bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
+        }
+    }
 
-//         for (int i = 0; i < bulletsPerShot; i++) 
-//         {
-//             float bulDirX = transform.position.x + Mathf.Sin((angle * Mathf.PI) / 180f);
-//             float bulDirZ = transform.position.z + Mathf.Cos((angle * Mathf.PI) / 180f);
+    private void corrutine3actions()
+    {
+        int numBullets = 36; // Número de balas en la espiral
+        float spiralRadius = 1.5f; // Radio de la espiral
+        float rotationSpeed = 10f; // Velocidad de rotación de la espiral
 
-//             bulletMoveDirection = new Vector3(bulDirX, 0f, bulDirZ);
-//             bulletMoveDirection = transform.TransformDirection(bulletMoveDirection.normalized);
+        for (int i = 0; i < numBullets; i++)
+        {
+            float angle = i * (360f / numBullets);
+            float x = Mathf.Cos(angle) * spiralRadius;
+            float y = Mathf.Sin(angle) * spiralRadius;
 
-//             GameObject bul = BulletPool.bulletPoolInstance.GetBullet();
-//             bul.transform.position = transform.position;
-//             bul.transform.rotation = Quaternion.LookRotation(bulletMoveDirection);
-//             bul.SetActive(true);
-//             bul.GetComponent<Bullet>().SetMoveDirection(bulletMoveDirection);
+            Vector3 spawnPosition = transform.position + new Vector3(x, y, 0f);
+            Quaternion rotation = Quaternion.Euler(0, 0, angle + Time.time * rotationSpeed);
+            GameObject bullet = Instantiate(bulletPrefab, spawnPosition, rotation);
 
-//             angle += angleStep;
-//         }
-//     }
+            // Ajustar la velocidad de la bala
+            bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
+        }
+    }
 
-    // public void CircleShot()
-    // {
-    //     float angleStep = 360f / bulletsInCircle;
+    IEnumerator corrutine1()
+    {
+        yield return new WaitForSeconds(1);
 
-    //     for (int i = 0; i < bulletsInCircle; i++)
-    //     {
-    //         float angle = i * angleStep;
-    //         float bulDirX = transform.position.x + circleRadius * Mathf.Cos(angle * Mathf.Deg2Rad);
-    //         float bulDirZ = transform.position.z + circleRadius * Mathf.Sin(angle * Mathf.Deg2Rad);
+        while (true)
+        {
+            corrutine1actions();
+            timerNextStage--;
 
-    //         Vector3 bulletMoveDirection = new Vector3(bulDirX, transform.position.y, bulDirZ);
+            if (timerNextStage <= 0)
+            {
+                currentStage++;
+                timerNextStage = timerGlobal;
+                StartCoroutine(corrutine2());
+                break;
+            }
 
-    //         GameObject bul = BulletPool.bulletPoolInstance.GetBullet();
-    //         bul.transform.position = transform.position;
-    //         bul.transform.rotation = Quaternion.LookRotation(bulletMoveDirection - transform.position);
-    //         bul.SetActive(true);
-    //         bul.GetComponent<Bullet>().SetMoveDirection(bulletMoveDirection);
-    //     }
-    // }
+            yield return new WaitForSeconds(respawnTime);
+        }
+    }
 
-//     public void SpiralShot()
-//     {
-//         float angle = 0f;
+    IEnumerator corrutine2()
+    {
+        yield return new WaitForSeconds(1);
 
-//         for (int i = 0; i < bulletsInSpiral; i++)
-//         {
-//             float bulDirX = transform.position.x + spiralRadius * Mathf.Cos(angle * Mathf.Deg2Rad);
-//             float bulDirZ = transform.position.z + spiralRadius * Mathf.Sin(angle * Mathf.Deg2Rad);
+        while (true)
+        {
+            corrutine2actions();
+            timerNextStage--;
 
-//             Vector3 bulletMoveDirection = new Vector3(bulDirX, transform.position.y, bulDirZ);
+            if (timerNextStage <= 0)
+            {
+                currentStage++;
+                timerNextStage = timerGlobal;
+                StartCoroutine(corrutine3());
+                break;
+            }
 
-//             GameObject bul = BulletPool.bulletPoolInstance.GetBullet();
-//             bul.transform.position = transform.position;
-//             bul.transform.rotation = Quaternion.LookRotation(bulletMoveDirection - transform.position);
-//             bul.SetActive(true);
-//             bul.GetComponent<Bullet>().SetMoveDirection(bulletMoveDirection);
+            yield return new WaitForSeconds(respawnTime);
+        }
+    }
 
-//             angle += spiralAngleStep;
-//         }
-//     }
-// }
+    IEnumerator corrutine3()
+    {
+        yield return new WaitForSeconds(1);
+
+        while (true)
+        {
+            corrutine3actions();
+            timerNextStage--;
+
+            if (timerNextStage <= 0)
+            {
+                currentStage++;
+                timerNextStage = timerGlobal;
+                StartCoroutine(corrutine1());
+                break;
+            }
+
+            yield return new WaitForSeconds(respawnTime);
+        }
+    }
+}

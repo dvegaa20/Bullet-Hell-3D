@@ -8,7 +8,7 @@ public class BulletPool : MonoBehaviour {
     [Header("Bullet Attributes")]
     public GameObject bullet;
     public float bulletLife = 1.0f;
-    public float speed = 1f;
+    public float speed = 100f;
 
     [Header("Spawner Attributes")]
     [SerializeField] private float firingRate = 1f;
