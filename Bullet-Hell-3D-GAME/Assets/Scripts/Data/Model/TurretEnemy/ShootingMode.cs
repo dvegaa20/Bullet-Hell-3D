@@ -10,12 +10,12 @@ public class ShootingMode : MonoBehaviour
     private int timerGlobal = 10;
     public GameObject bulletPrefab; 
     public float respawnTime; 
-    public int bulletsPerCircle = 5; // Cantidad de balas por ráfaga en corrutine1
-    public float bulletSpeed = 5f; // Ajusta la velocidad según tus necesidades
+    public int bulletsPerCircle = 5; 
+    public float bulletSpeed = 5f; 
     public int bulletsPerSpiral = 5;
     public float spiralRadius = 1.5f;
-    public float oscillationAmplitude = 0.5f; // Ajusta la amplitud de la oscilación
-    public float oscillationFrequency = 2f; // Ajusta la frecuencia de la oscilación
+    public float oscillationAmplitude = 0.5f;
+    public float oscillationFrequency = 2f;
 
     void Start()
     {
@@ -32,7 +32,6 @@ public class ShootingMode : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(90, 0, angle);
             GameObject bullet = Instantiate(bulletPrefab, transform.position, rotation);
             
-            // Ajustar la velocidad de la bala
             bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
         }
     }
@@ -49,16 +48,15 @@ public class ShootingMode : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, angle);
             GameObject bullet = Instantiate(bulletPrefab, spawnPosition, rotation);
 
-            // Ajustar la velocidad de la bala
             bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
         }
     }
 
     private void corrutine3actions()
     {
-        int numBullets = 36; // Número de balas en la espiral
-        float spiralRadius = 1.5f; // Radio de la espiral
-        float rotationSpeed = 10f; // Velocidad de rotación de la espiral
+        int numBullets = 36; 
+        float spiralRadius = 1.5f; 
+        float rotationSpeed = 10f; 
 
         for (int i = 0; i < numBullets; i++)
         {
@@ -70,7 +68,6 @@ public class ShootingMode : MonoBehaviour
             Quaternion rotation = Quaternion.Euler(0, 0, angle + Time.time * rotationSpeed);
             GameObject bullet = Instantiate(bulletPrefab, spawnPosition, rotation);
 
-            // Ajustar la velocidad de la bala
             bullet.GetComponent<Rigidbody2D>().velocity = bullet.transform.up * bulletSpeed;
         }
     }
